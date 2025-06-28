@@ -1,0 +1,61 @@
+[package]
+name = "buttonled"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "buttonled"
+path = "./src/bin/main.rs"
+test = false
+
+[[test]]
+name    = "hello_test"
+harness = false
+
+[lib]
+test = false
+
+[dependencies]
+esp-hal = { version = "=1.0.0-beta.1", features = [
+    "esp32c6",
+    "unstable",
+    "defmt",
+] }
+esp-bootloader-esp-idf = "0.1.0"
+defmt = "1.0.1"
+
+rtt-target = { version = "0.6.1", features = ["defmt"] }
+panic-rtt-target = { version = "0.2.0", features = ["defmt"] }
+esp-alloc = { version = "0.8.0", features = ["defmt"] }
+embassy-executor = { version = "0.7.0", features = [
+    "task-arena-size-20480",
+    "defmt",
+] }
+embassy-time     = { version = "0.4.0", features = ["defmt"] }
+esp-hal-embassy = { version = "0.8.1", features = [
+    "esp32c6",
+    "defmt",
+] }
+static_cell = { version = "2.1.0", features = ["nightly"] }
+critical-section = "1.2.0"
+
+[dev-dependencies]
+embedded-test = { version = "0.6.0", features = [
+    "embassy",
+    "external-executor",
+    "defmt",
+] }
+
+[profile.dev]
+# Rust debug is too slow.
+# For debug builds always builds with some optimization
+opt-level = "s"
+
+[profile.release]
+codegen-units = 1        # LLVM can perform better optimizations using a single thread
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 's'
+overflow-checks = false
